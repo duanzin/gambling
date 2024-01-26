@@ -1,10 +1,18 @@
-import express from "express";
+import express, { Express } from "express";
 import cors from "cors";
+import { connectDb, disconnectDB } from "./config/database";
+import routes from "./routes/index";
 
 const app = express();
-app.use(cors()).use(express.json());
+app.use(cors()).options("*", cors()).use(express.json()).use(routes);
 
-const port = process.env.PORT || 5000;
-app.listen(port, () => console.log(`Server running in port: ${port}`));
+export function init(): Promise<Express> {
+  connectDb();
+  return Promise.resolve(app);
+}
+
+export async function close(): Promise<void> {
+  await disconnectDB();
+}
 
 export default app;
