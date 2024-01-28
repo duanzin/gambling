@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import participantsService from "services/participantsService";
+import participantsService from "../services/participantsService";
 
 async function getParticipants(
   req: Request,

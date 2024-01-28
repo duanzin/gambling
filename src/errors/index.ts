@@ -11,3 +11,10 @@ export function badRequestError() {
     message: "Bad Request",
   };
 }
+
+export function conflictError() {
+  return {
+    name: "ConflictError",
+    message: "Game has already been finished",
+  };
+}

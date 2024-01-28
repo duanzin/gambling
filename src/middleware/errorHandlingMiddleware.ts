@@ -18,5 +18,9 @@ export function handleApplicationErrors(
     return sendErrorResponse(res, 400, err.message);
   }
 
+  if (err.name === "ConflictError") {
+    return sendErrorResponse(res, 409, err.message);
+  }
+
   return sendErrorResponse(res, 500, err.message);
 }
