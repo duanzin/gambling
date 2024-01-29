@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import participantsService from "../services/participantsService";
+import { CreateParticipantParams } from "protocol/participantsProtocol";
 
 async function getParticipants(
   req: Request,
@@ -20,7 +21,7 @@ async function createParticipant(
   next: NextFunction
 ) {
   try {
-    const { name, balance }: { name: string; balance: number } = req.body;
+    const { name, balance }: CreateParticipantParams = req.body;
     const newParticipant = await participantsService.postParticipant(
       name,
       balance

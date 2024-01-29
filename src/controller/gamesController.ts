@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import gamesService from "../services/gamesService";
-import { badRequestError } from "errors";
+import { badRequestError } from "../errors/index";
+import { CreateGameParams, EndGameParams } from "../protocol/gamesProtocol";
 
 async function getGames(req: Request, res: Response, next: NextFunction) {
   try {
@@ -24,10 +25,7 @@ async function getGameById(req: Request, res: Response, next: NextFunction) {
 
 async function createGame(req: Request, res: Response, next: NextFunction) {
   try {
-    const {
-      homeTeamName,
-      awayTeamName,
-    }: { homeTeamName: string; awayTeamName: string } = req.body;
+    const { homeTeamName, awayTeamName }: CreateGameParams = req.body;
     const newGame = await gamesService.postGame(homeTeamName, awayTeamName);
     res.status(201).send(newGame);
   } catch (error) {
@@ -39,10 +37,7 @@ async function finishGame(req: Request, res: Response, next: NextFunction) {
   try {
     if (isNaN(parseInt(req.params.id))) throw badRequestError();
     const id: number = parseInt(req.params.id);
-    const {
-      homeTeamScore,
-      awayTeamScore,
-    }: { homeTeamScore: number; awayTeamScore: number } = req.body;
+    const { homeTeamScore, awayTeamScore }: EndGameParams = req.body;
     const finishedGame = await gamesService.endGame(
       homeTeamScore,
       awayTeamScore,

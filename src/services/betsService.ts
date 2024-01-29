@@ -1,10 +1,15 @@
 import { Bet } from "@prisma/client";
 import participantsRepository from "../repository/participantsRepository";
-import { amountBetError, invalidGameError, notFoundError } from "errors";
-import gamesRepository from "repository/gamesRepository";
-import betsRepository from "repository/betsRepository";
+import {
+  amountBetError,
+  invalidGameError,
+  notFoundError,
+} from "../errors/index";
+import gamesRepository from "../repository/gamesRepository";
+import betsRepository from "../repository/betsRepository";
+import { CreateBetParams } from "../protocol/betsProtocol";
 
-async function postBet(betData): Promise<Bet> {
+async function postBet(betData: CreateBetParams): Promise<Bet> {
   const participantExists = await participantsRepository.findById(
     betData.participantId
   );

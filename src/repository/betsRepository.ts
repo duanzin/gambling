@@ -1,3 +1,4 @@
+import { CreateBetParams } from "../protocol/betsProtocol";
 import { prisma } from "../config/database";
 
 async function update(homeScore: number, awayScore: number, gameId: number) {
@@ -48,7 +49,7 @@ async function update(homeScore: number, awayScore: number, gameId: number) {
   await Promise.all(updatePromises);
 }
 
-async function create(betData) {
+async function create(betData: CreateBetParams) {
   const newBet = await prisma.bet.create({
     data: {
       homeTeamScore: betData.homeTeamScore,
