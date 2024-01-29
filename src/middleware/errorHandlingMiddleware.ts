@@ -1,5 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 
+const errorStatusMapping: Record<string, number> = {
+  ValidationError: 422,
+  BadRequestError: 400,
+  ConflictError: 409,
+  NotFoundError: 404,
+  AmountBetError: 400,
+  InvalidGameError: 400,
+};
+
 function sendErrorResponse(res: Response, status: number, message: string) {
   return res.status(status).json({ message });
 }
@@ -10,29 +19,6 @@ export function handleApplicationErrors(
   res: Response,
   next: NextFunction
 ) {
-  if (err.name === "ValidationError") {
-    return sendErrorResponse(res, 422, err.message);
-  }
-
-  if (err.name === "BadRequestError") {
-    return sendErrorResponse(res, 400, err.message);
-  }
-
-  if (err.name === "ConflictError") {
-    return sendErrorResponse(res, 409, err.message);
-  }
-
-  if (err.name === "NotFoundError") {
-    return sendErrorResponse(res, 404, err.message);
-  }
-
-  if (err.name === "AmountBetError") {
-    return sendErrorResponse(res, 400, err.message);
-  }
-
-  if (err.name === "InvalidGameError") {
-    return sendErrorResponse(res, 400, err.message);
-  }
-
-  return sendErrorResponse(res, 500, err.message);
+  const status = errorStatusMapping[err.name] || 500;
+  return sendErrorResponse(res, status, err.message);
 }
