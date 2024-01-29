@@ -34,7 +34,7 @@ async function findById(participantId: number) {
   return participant;
 }
 
-async function subtractBalance(participantId: number, newBalance: number) {
+async function updateBalance(participantId: number, newBalance: number) {
   await prisma.participant.update({
     where: {
       id: participantId,
@@ -49,5 +49,5 @@ export default {
   create,
   findAll,
   findById,
-  subtractBalance
+  updateBalance,
 };

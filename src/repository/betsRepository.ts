@@ -1,5 +1,5 @@
-import { CreateBetParams } from "../protocol/betsProtocol";
 import { prisma } from "../config/database";
+import { CreateBetParams } from "../protocol/betsProtocol";
 
 async function update(homeScore: number, awayScore: number, gameId: number) {
   const allBets = await prisma.bet.findMany({
