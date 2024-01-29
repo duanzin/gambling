@@ -24,7 +24,30 @@ async function findAll() {
   return participants;
 }
 
+async function findById(participantId: number) {
+  const participant = await prisma.participant.findUnique({
+    where: {
+      id: participantId,
+    },
+  });
+
+  return participant;
+}
+
+async function subtractBalance(participantId: number, newBalance: number) {
+  await prisma.participant.update({
+    where: {
+      id: participantId,
+    },
+    data: {
+      balance: newBalance,
+    },
+  });
+}
+
 export default {
   create,
   findAll,
+  findById,
+  subtractBalance
 };

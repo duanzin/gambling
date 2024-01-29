@@ -48,4 +48,31 @@ async function update(homeScore: number, awayScore: number, gameId: number) {
   await Promise.all(updatePromises);
 }
 
-export default { update };
+async function create(betData) {
+  const newBet = await prisma.bet.create({
+    data: {
+      homeTeamScore: betData.homeTeamScore,
+      awayTeamScore: betData.awayTeamScore,
+      amountBet: betData.amountBet,
+      gameId: betData.gameId,
+      participantId: betData.participantId,
+      amountWon: null,
+    },
+    select: {
+      id: true,
+      createdAt: true,
+      updatedAt: true,
+      homeTeamScore: true,
+      awayTeamScore: true,
+      amountBet: true,
+      gameId: true,
+      participantId: true,
+      status: true,
+      amountWon: true,
+    },
+  });
+
+  return newBet;
+}
+
+export default { update, create };

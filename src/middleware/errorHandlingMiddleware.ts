@@ -22,5 +22,17 @@ export function handleApplicationErrors(
     return sendErrorResponse(res, 409, err.message);
   }
 
+  if (err.name === "NotFoundError") {
+    return sendErrorResponse(res, 404, err.message);
+  }
+
+  if (err.name === "AmountBetError") {
+    return sendErrorResponse(res, 400, err.message);
+  }
+
+  if (err.name === "InvalidGameError") {
+    return sendErrorResponse(res, 400, err.message);
+  }
+
   return sendErrorResponse(res, 500, err.message);
 }

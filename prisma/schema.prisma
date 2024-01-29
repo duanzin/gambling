@@ -17,8 +17,8 @@ model Bet {
   amountBet     Int
   gameId        Int?
   participantId Int?
-  status        String?      @db.VarChar(10)
-  amountWon     Int?
+  status        String?      @default("PENDING") @db.VarChar(10)
+  amountWon     Int?        
   Game          Game?        @relation(fields: [gameId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Participant   Participant? @relation(fields: [participantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
