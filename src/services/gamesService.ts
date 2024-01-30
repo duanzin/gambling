@@ -1,7 +1,6 @@
 import { Game } from "@prisma/client";
 import gamesRepository from "../repository/gamesRepository";
 import { conflictError, notFoundError } from "../errors/index";
-import betsRepository from "../repository/betsRepository";
 import betsService from "./betsService";
 
 async function getAllGames(): Promise<Game[]> {

@@ -21,7 +21,7 @@ export function conflictError() {
 
 export function notFoundError() {
   return {
-    name: "notFoundError",
+    name: "NotFoundError",
     message: "Element with the specified ID does not exist",
   };
 }

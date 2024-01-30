@@ -1,5 +1,6 @@
 import { prisma } from "../config/database";
 import { CreateBetParams } from "../protocol/betsProtocol";
+import participantsRepository from "./participantsRepository";
 
 async function updateBet(betId: number, updateData) {
   return prisma.bet.update({
@@ -47,4 +48,18 @@ async function findByGameId(gameId: number) {
   return allBets;
 }
 
-export default { create, findByGameId, updateBet };
+async function findParticipantAndGame(
+  newBalance: number,
+  betData: CreateBetParams
+) {
+  return await prisma.$transaction(async () => {
+    await participantsRepository.updateBalance(
+      betData.participantId,
+      newBalance
+    );
+    const newBet = await create(betData);
+    return newBet;
+  });
+}
+
+export default { create, findByGameId, updateBet, findParticipantAndGame };

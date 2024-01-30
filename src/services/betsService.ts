@@ -1,4 +1,3 @@
-import { prisma } from "../config/database";
 import { Bet } from "@prisma/client";
 import participantsRepository from "../repository/participantsRepository";
 import {
@@ -21,15 +20,8 @@ async function postBet(betData: CreateBetParams): Promise<Bet> {
   if (participantExists.balance < betData.amountBet) throw amountBetError();
   if (gameExists.isFinished === true) throw invalidGameError();
 
-  return await prisma.$transaction(async () => {
-    const newBalance: number = participantExists.balance - betData.amountBet;
-    await participantsRepository.updateBalance(
-      betData.participantId,
-      newBalance
-    );
-    const newBet = await betsRepository.create(betData);
-    return newBet;
-  });
+  const newBalance: number = participantExists.balance - betData.amountBet;
+  return betsRepository.findParticipantAndGame(newBalance, betData);
 }
 
 async function updateBet(homeScore: number, awayScore: number, gameId: number) {
