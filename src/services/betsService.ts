@@ -8,6 +8,7 @@ import {
 } from "../errors/index";
 import gamesRepository from "../repository/gamesRepository";
 import betsRepository from "../repository/betsRepository";
+import participantsService from "./participantsService";
 import { CreateBetParams } from "../protocol/betsProtocol";
 
 async function postBet(betData: CreateBetParams): Promise<Bet> {
@@ -69,10 +70,27 @@ async function updateBet(homeScore: number, awayScore: number, gameId: number) {
         : 0,
     };
 
-    return betsRepository.updateBet(bet.id, updateData);
+    return {
+      betId: bet.id,
+      updateData,
+      participantId: bet.participantId,
+      amountWon: updateData.amountWon,
+    };
   });
 
-  await Promise.all(updatePromises);
+  const updatedBets = await Promise.all(
+    updatePromises.map(({ betId, updateData }) =>
+      betsRepository.updateBet(betId, updateData)
+    )
+  );
+
+  const winners = updatePromises
+    .filter(({ updateData }) => updateData.status === "WON")
+    .map(({ participantId, amountWon }) => ({ participantId, amountWon }));
+
+  await participantsService.updateParticipantsBalances(winners);
+
+  return updatedBets;
 }
 
 export default {
