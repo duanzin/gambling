@@ -3,8 +3,8 @@ import { createBetSchema } from "../../src/schemas/betSchema";
 
 describe("createBetSchema", () => {
   const generateValidInput = () => ({
-    homeTeamScore: faker.number.int(),
-    awayTeamScore: faker.number.int(),
+    homeTeamScore: faker.number.int({ max: 100 }),
+    awayTeamScore: faker.number.int({ max: 100 }),
     amountBet: faker.number.int({ min: 1, max: 1000000 }),
     gameId: faker.number.int({ min: 1, max: 1000000000 }),
     participantId: faker.number.int({ min: 1, max: 1000000000 }),

@@ -3,8 +3,8 @@ import { createGameSchema, endGameSchema } from "../../src/schemas/gameSchema";
 
 describe("createGameSchema", () => {
   const generateValidInput = () => ({
-    homeTeamName: faker.string.alpha(),
-    awayTeamName: faker.string.alpha(),
+    homeTeamName: faker.string.alpha({ length: { min: 1, max: 50 } }),
+    awayTeamName: faker.string.alpha({ length: { min: 1, max: 50 } }),
   });
 
   describe("when homeTeamName is not valid", () => {
@@ -20,6 +20,17 @@ describe("createGameSchema", () => {
     it("should return error if homeTeamName is not a string", () => {
       const input = generateValidInput();
       input.homeTeamName = faker.number.int() as any;
+
+      const { error } = createGameSchema.validate(input);
+
+      expect(error).toBeDefined();
+    });
+
+    it("should return error if name is over 50 characters", () => {
+      const input = generateValidInput();
+      input.homeTeamName = faker.string.alpha({
+        length: { min: 51, max: 100 },
+      });
 
       const { error } = createGameSchema.validate(input);
 
@@ -76,6 +87,17 @@ describe("createGameSchema", () => {
     it("should return error if awayTeamName is not a string", () => {
       const input = generateValidInput();
       input.awayTeamName = faker.number.int() as any;
+
+      const { error } = createGameSchema.validate(input);
+
+      expect(error).toBeDefined();
+    });
+
+    it("should return error if name is over 50 characters", () => {
+      const input = generateValidInput();
+      input.awayTeamName = faker.string.alpha({
+        length: { min: 51, max: 100 },
+      });
 
       const { error } = createGameSchema.validate(input);
 

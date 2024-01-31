@@ -54,7 +54,7 @@ describe("POST /participants/", () => {
   });
   describe("when input is valid", () => {
     const generateValidInput = () => ({
-      name: faker.string.alpha(),
+      name: faker.string.alpha({ length: { min: 1, max: 50 } }),
       balance: faker.number.int({ min: 1000, max: 1000000 }),
     });
     it("should respond with status 201 and created participant", async () => {

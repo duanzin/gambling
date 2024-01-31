@@ -26,6 +26,15 @@ describe("createParticipantSchema", () => {
       expect(error).toBeDefined();
     });
 
+    it("should return error if name is over 50 characters", () => {
+      const input = generateValidInput();
+      input.name = faker.string.alpha({ length: { min: 51, max: 100 } });
+
+      const { error } = createParticipantSchema.validate(input);
+
+      expect(error).toBeDefined();
+    });
+
     it("should return error if name is empty", () => {
       const input = generateValidInput();
       input.name = "";
