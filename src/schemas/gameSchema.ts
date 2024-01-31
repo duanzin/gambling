@@ -4,11 +4,11 @@ import { CreateGameParams, EndGameParams } from "protocol/gamesProtocol";
 export const createGameSchema = Joi.object<CreateGameParams>({
   homeTeamName: Joi.string()
     .min(1)
-    .regex(/^\S.*\S$/)
+    .regex(/^\S(?:.*\S)?$/)
     .required(),
   awayTeamName: Joi.string()
     .min(1)
-    .regex(/^\S.*\S$/)
+    .regex(/^\S(?:.*\S)?$/)
     .required(),
 });
 
