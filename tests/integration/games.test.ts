@@ -3,6 +3,7 @@ import supertest from "supertest";
 import { cleanDb } from "../helpers";
 import { createGame } from "../factories/gameFactory";
 import app, { init } from "../../src/app";
+import { createBet } from "../factories/betFactory";
 
 beforeAll(async () => {
   await init();
@@ -13,6 +14,7 @@ const server = supertest(app);
 
 describe("GET /games/", () => {
   it("should respond with status 200 and empty array when no games are found", async () => {
+    await cleanDb();
     const response = await server.get(`/games/`);
 
     expect(response.status).toBe(200);
@@ -38,6 +40,52 @@ describe("GET /games/", () => {
         }),
       ])
     );
+  });
+});
+
+describe("GET /games/:id", () => {
+  it("should respond with status 400 when id isnt a string", async () => {
+    const response = await server.get(`/games/aaa`);
+
+    expect(response.status).toBe(400);
+  });
+
+  it("should respond with status 404 when game isnt found", async () => {
+    const response = await server.get(`/games/99999999`);
+
+    expect(response.status).toBe(404);
+  });
+
+  it("should respond with status 200 and array of games with its associated bets", async () => {
+    const game = await createGame();
+    await createBet(null, game.id);
+    const response = await server.get(`/games/${game.id}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      id: game.id,
+      createdAt: expect.any(String),
+      updatedAt: expect.any(String),
+      homeTeamName: game.homeTeamName,
+      awayTeamName: game.awayTeamName,
+      homeTeamScore: game.homeTeamScore,
+      awayTeamScore: game.awayTeamScore,
+      isFinished: game.isFinished,
+      Bet: expect.arrayContaining([
+        expect.objectContaining({
+          id: expect.any(Number),
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String),
+          homeTeamScore: expect.any(Number),
+          awayTeamScore: expect.any(Number),
+          amountBet: expect.any(Number),
+          gameId: expect.any(Number),
+          participantId: expect.any(Number),
+          status: expect.stringMatching(/^(PENDING|WON|LOST)$/),
+          amountWon: null,
+        }),
+      ]),
+    });
   });
 });
 

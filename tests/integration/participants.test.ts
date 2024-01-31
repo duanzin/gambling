@@ -13,6 +13,7 @@ const server = supertest(app);
 
 describe("GET /participants/", () => {
   it("should respond with status 200 and empty array when no participants are found", async () => {
+    await cleanDb();
     const response = await server.get(`/participants/`);
 
     expect(response.status).toBe(200);

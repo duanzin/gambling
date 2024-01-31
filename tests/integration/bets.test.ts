@@ -111,7 +111,6 @@ describe("POST /bets/", () => {
           amountWon: null,
         })
       );
-      await cleanDb();
     });
   });
 });
