@@ -48,14 +48,11 @@ async function findByGameId(gameId: number) {
   return allBets;
 }
 
-async function findParticipantAndGame(
-  newBalance: number,
-  betData: CreateBetParams
-) {
+async function findParticipantAndGame(betData: CreateBetParams) {
   return await prisma.$transaction(async () => {
-    await participantsRepository.updateBalance(
+    await participantsRepository.decreaseBalance(
       betData.participantId,
-      newBalance
+      betData.amountBet
     );
     const newBet = await create(betData);
     return newBet;

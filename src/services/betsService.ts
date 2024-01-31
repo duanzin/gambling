@@ -20,8 +20,7 @@ async function postBet(betData: CreateBetParams): Promise<Bet> {
   if (participantExists.balance < betData.amountBet) throw amountBetError();
   if (gameExists.isFinished === true) throw invalidGameError();
 
-  const newBalance: number = participantExists.balance - betData.amountBet;
-  return betsRepository.findParticipantAndGame(newBalance, betData);
+  return betsRepository.findParticipantAndGame(betData);
 }
 
 async function updateBet(homeScore: number, awayScore: number, gameId: number) {
@@ -46,8 +45,6 @@ async function updateBet(homeScore: number, awayScore: number, gameId: number) {
     0
   );
 
-  const houseFee = Math.floor((totalAmountWagered * 0.3) / 100);
-
   const updatePromises = allBets.map((bet) => {
     const isWinningBet = winningBets.some(
       (winningBet) => winningBet.id === bet.id
@@ -57,7 +54,7 @@ async function updateBet(homeScore: number, awayScore: number, gameId: number) {
       status: isWinningBet ? "WON" : "LOST",
       amountWon: isWinningBet
         ? Math.floor(
-            (bet.amountBet / sumWinningAmount) * (totalAmountWagered - houseFee)
+            (bet.amountBet / sumWinningAmount) * totalAmountWagered * (1 - 0.3)
           )
         : 0,
     };

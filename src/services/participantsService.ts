@@ -12,21 +12,22 @@ async function postParticipant(
   return await participantsRepository.create(name, balance);
 }
 
-async function updateParticipantsBalances(winners) {
+async function updateParticipantsBalances(
+  winners: { participantId: number; amountWon: number }[]
+) {
   const participantBalances: { [key: number]: number } = {};
-
   winners.forEach(({ participantId, amountWon }) => {
-    const id: number = participantId as number;
-    if (!participantBalances[id]) {
-      participantBalances[id] = 0;
-    }
-    participantBalances[id] += amountWon;
+    const id: number = participantId;
+    participantBalances[id] = (participantBalances[id] || 0) + amountWon;
   });
 
   const updateParticipantBalancesPromises = Object.entries(
     participantBalances
   ).map(([participantId, amountWon]) =>
-    participantsRepository.updateBalance(parseInt(participantId, 10), amountWon)
+    participantsRepository.increaseBalance(
+      parseInt(participantId, 10),
+      amountWon
+    )
   );
 
   await Promise.all(updateParticipantBalancesPromises);
