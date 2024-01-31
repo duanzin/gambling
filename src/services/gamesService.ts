@@ -10,7 +10,6 @@ async function getAllGames(): Promise<Game[]> {
 async function getSpecificGame(id: number): Promise<Game> {
   const game = await gamesRepository.findById(id);
   if (!game) throw notFoundError();
-  console.log(game.Bet[0].createdAt);
   return game;
 }
 

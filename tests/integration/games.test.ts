@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import supertest from "supertest";
 import { cleanDb } from "../helpers";
-import { createGame } from "../factories/gameFactory";
+import { createFinishedGame, createGame } from "../factories/gameFactory";
 import app, { init } from "../../src/app";
 import { createBet } from "../factories/betFactory";
 
@@ -125,6 +125,77 @@ describe("POST /games/", () => {
           homeTeamScore: 0,
           awayTeamScore: 0,
           isFinished: false,
+        })
+      );
+    });
+  });
+});
+
+describe("POST /games/:id/finsih", () => {
+  it("should return error if input is not present", async () => {
+    const response = await server.post("/games/9999999/finish");
+
+    expect(response.status).toBe(422);
+  });
+
+  it("should respond with status 422 when input is not valid", async () => {
+    const invalidBody = { [faker.lorem.word()]: faker.lorem.word() };
+
+    const response = await server
+      .post("/games/999999/finish")
+      .send(invalidBody);
+
+    expect(response.status).toBe(422);
+  });
+
+  describe("when input is valid", () => {
+    const generateValidInput = () => ({
+      homeTeamScore: faker.number.int({ min: 0, max: 100 }),
+      awayTeamScore: faker.number.int({ min: 0, max: 100 }),
+    });
+
+    it("should respond with status 400 when id isnt a string", async () => {
+      const input = generateValidInput();
+      const response = await server.post(`/games/aaa/finish`).send(input);
+
+      expect(response.status).toBe(400);
+    });
+
+    it("should respond with status 404 when game doesnt exist", async () => {
+      const input = generateValidInput();
+      const response = await server.post(`/games/99999999/finish`).send(input);
+
+      expect(response.status).toBe(404);
+    });
+
+    it("should respond with status 409 when game is already finished", async () => {
+      const input = generateValidInput();
+      const game = await createFinishedGame();
+      const response = await server
+        .post(`/games/${game.id}/finish`)
+        .send(input);
+
+      expect(response.status).toBe(409);
+    });
+
+    it("should respond with status 200 and finished game", async () => {
+      const input = generateValidInput();
+      const game = await createGame();
+      const response = await server
+        .post(`/games/${game.id}/finish`)
+        .send(input);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(
+        expect.objectContaining({
+          id: game.id,
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String),
+          homeTeamName: game.homeTeamName,
+          awayTeamName: game.awayTeamName,
+          homeTeamScore: input.homeTeamScore,
+          awayTeamScore: input.awayTeamScore,
+          isFinished: true,
         })
       );
     });
