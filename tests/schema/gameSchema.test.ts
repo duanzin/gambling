@@ -130,8 +130,8 @@ describe("createGameSchema", () => {
 
 describe("endBetSchema", () => {
   const generateValidInput = () => ({
-    homeTeamScore: faker.number.int(),
-    awayTeamScore: faker.number.int(),
+    homeTeamScore: faker.number.int({ min: 0, max: 100 }),
+    awayTeamScore: faker.number.int({ min: 0, max: 100 }),
   });
 
   describe("when homeTeamScore is not valid", () => {

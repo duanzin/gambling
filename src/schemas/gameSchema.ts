@@ -13,6 +13,6 @@ export const createGameSchema = Joi.object<CreateGameParams>({
 });
 
 export const endGameSchema = Joi.object<EndGameParams>({
-  homeTeamScore: Joi.number().integer().min(0).required(),
-  awayTeamScore: Joi.number().integer().min(0).required(),
+  homeTeamScore: Joi.number().integer().min(0).max(100).required(),
+  awayTeamScore: Joi.number().integer().min(0).max(100).required(),
 });

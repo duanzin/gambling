@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import participantsService from "../services/participantsService";
-import { CreateParticipantParams } from "protocol/participantsProtocol";
+import { CreateParticipantParams } from "../protocol/participantsProtocol";
 
 async function getParticipants(
   req: Request,

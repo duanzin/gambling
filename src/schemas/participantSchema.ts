@@ -6,5 +6,5 @@ export const createParticipantSchema = Joi.object<CreateParticipantParams>({
     .min(1)
     .regex(/^\S(?:.*\S)?$/)
     .required(),
-  balance: Joi.number().integer().min(1000).required(),
+  balance: Joi.number().integer().min(1000).max(1000000).required(),
 });

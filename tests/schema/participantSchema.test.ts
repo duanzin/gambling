@@ -4,7 +4,7 @@ import { createParticipantSchema } from "../../src/schemas/participantSchema";
 describe("createParticipantSchema", () => {
   const generateValidInput = () => ({
     name: faker.string.alpha(),
-    balance: faker.number.int({ min: 1000 }),
+    balance: faker.number.int({ min: 1000, max: 1000000 }),
   });
 
   describe("when name is not valid", () => {
