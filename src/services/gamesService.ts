@@ -1,7 +1,6 @@
 import { Game } from "@prisma/client";
 import gamesRepository from "../repository/gamesRepository";
 import { conflictError, notFoundError } from "../errors/index";
-import betsService from "./betsService";
 
 async function getAllGames(): Promise<Game[]> {
   return await gamesRepository.findAll();
@@ -28,8 +27,11 @@ async function endGame(
   const gameExists = await gamesRepository.findById(id);
   if (!gameExists) throw notFoundError();
   if (gameExists.isFinished === true) throw conflictError();
-  await betsService.updateBet(homeTeamScore, awayTeamScore, id);
-  return await gamesRepository.finish(homeTeamScore, awayTeamScore, id);
+  return await gamesRepository.transactionForEndGame(
+    homeTeamScore,
+    awayTeamScore,
+    id
+  );
 }
 
 export default {

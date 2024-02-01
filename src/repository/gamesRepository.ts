@@ -1,4 +1,5 @@
 import { prisma } from "../config/database";
+import betsService from "../services/betsService";
 
 async function create(homeTeamName: string, awayTeamName: string) {
   const newGame = await prisma.game.create({
@@ -82,9 +83,21 @@ async function findById(gameId: number) {
   return game;
 }
 
+async function transactionForEndGame(
+  homeTeamScore: number,
+  awayTeamScore: number,
+  gameId: number
+) {
+  return await prisma.$transaction(async () => {
+    await betsService.updateBet(homeTeamScore, awayTeamScore, gameId);
+    return await finish(homeTeamScore, awayTeamScore, gameId);
+  });
+}
+
 export default {
   create,
   finish,
   findAll,
   findById,
+  transactionForEndGame,
 };
