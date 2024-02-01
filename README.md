@@ -50,9 +50,15 @@ It is recommended you use an api client like postman or insomnia to interact wit
 
 ```
 http://localhost:{port}/participants/
+https://gamblingapi.onrender.com/participants/
 ```
 
 #### POST route
+
+```
+POST http://localhost:{port}/participants/
+POST https://gamblingapi.onrender.com/participants/
+```
 
 Inserts an object into the Participant table.
 Expects a body like this:
@@ -77,6 +83,11 @@ Returns a body like this:
 
 #### GET route
 
+```
+GET http://localhost:{port}/participants/
+GET https://gamblingapi.onrender.com/participants/
+```
+
 Returns an array with all elements in the Participant table.
 
 ```
@@ -100,4 +111,186 @@ Returns an array with all elements in the Participant table.
 
 ### Games Route
 
+```
+http://localhost:{port}/games/
+https://gamblingapi.onrender.com/games/
+```
+
+#### POST route
+
+```
+POST http://localhost:{port}/games/
+POST https://gamblingapi.onrender.com/games/
+```
+
+Inserts an object into the Game table.
+Expects a body like this:
+
+```
+{
+  "homeTeamName":"vasco",
+  "awayTeamName": "flamengo"
+}
+```
+Returns a body like this:
+
+```
+{
+  "id": 1,
+  "createdAt": "2024-01-31T22:42:32.769Z",
+  "updatedAt": "2024-01-31T22:42:32.769Z",
+  "homeTeamName": "vasco",
+	"awayTeamName": "flamengo",
+	"homeTeamScore": 0,  // defaults to 0
+	"awayTeamScore": 0,  // defaults to 0
+	"isFinished": false // defaults to false
+}
+```
+
+#### POST :id finish route
+
+```
+POST http://localhost:{port}/games/:id/finish
+POST https://gamblingapi.onrender.com/games/:id/finish
+```
+
+Finishes a game an updates all bets associated with it.
+Expects a body like this:
+
+```
+{
+  "homeTeamScore": 0,
+  "awayTeamScore": 2
+}
+```
+
+Returns a body like this:
+
+```
+{
+  "id": 1,
+  "createdAt": "2024-01-31T22:42:32.769Z",
+  "updatedAt": "2024-01-31T22:42:32.769Z",
+  "homeTeamName": "vasco",
+	"awayTeamName": "flamengo",
+	"homeTeamScore": 0,
+	"awayTeamScore": 2,
+	"isFinished": true
+}
+```
+
+If a bet's "homeTeamScore" and "awayTeamScore" are equal to the ones in the game object, the bet "status" is set to "WON", "amountWon" is set to whatever quantity the bet won and the associated participant's "balance" is updated.
+If not, "status" is set to "LOST" and "amountWon" to 0.
+
+#### GET route
+
+```
+GET http://localhost:{port}/games/
+GET https://gamblingapi.onrender.com/games/
+```
+
+Returns an array with all elements in the Game table.
+
+```
+[
+    {
+        "id": 1,
+        "createdAt": "2024-01-31T22:42:32.769Z",
+        "updatedAt": "2024-01-31T22:42:32.769Z",
+        "homeTeamName": "vasco",
+        "awayTeamName": "flamengo",
+        "homeTeamScore": 0,
+        "awayTeamScore": 0,
+        "isFinished": false
+    },
+    {
+        "id": 2,
+        "createdAt": "2024-01-31T22:42:32.769Z",
+        "updatedAt": "2024-01-31T22:42:32.769Z",
+        "homeTeamName": "fluminense",
+        "awayTeamName": "botafogo",
+        "homeTeamScore": 0,
+        "awayTeamScore": 3,
+        "isFinished": true
+    }
+]
+```
+
+#### GET :id route
+
+```
+GET http://localhost:{port}/games/:id
+GET https://gamblingapi.onrender.com/games/:id
+```
+
+Returns a game object along with all bets associated with it.
+
+```
+    {
+        "id": 1,
+        "createdAt": "2024-01-31T22:42:32.769Z",
+        "updatedAt": "2024-01-31T22:42:32.769Z",
+        "homeTeamName": "vasco",
+        "awayTeamName": "flamengo",
+        "homeTeamScore": 0,
+        "awayTeamScore": 0,
+        "isFinished": false,
+        "Bet":[
+          {
+            "id": 1,
+            "createdAt": "2024-01-31T22:42:32.769Z",
+            "updatedAt": "2024-01-31T22:42:32.769Z",
+            "homeTeamScore": 0,
+            "awayTeamScore": 2,
+            "amountBet": 1000,
+            "gameId": 1,
+            "participantId": 1,
+            "status": "PENDING",
+            "amountWon": null
+          }
+        ]
+    }
+```
+
 ### Bets Route
+
+```
+http://localhost:{port}/bets/
+https://gamblingapi.onrender.com/bets/
+```
+
+#### POST route
+
+```
+POST http://localhost:{port}/bets/
+POST https://gamblingapi.onrender.com/bets/
+```
+
+Inserts an object into the Bets table.
+Expects a body like this:
+
+```
+{
+  "homeTeamScore": 0,
+	"awayTeamScore": 2,
+	"amountBet": 1000, // cant be greater than the participant's balance and will be subtracted from it
+	"gameId": 1,  // a game with given id must exist and cant be finished yet
+	"participantId": 1 // a participant with given id must exist
+}
+```
+Returns a body like this:
+
+```
+{
+  "id": 1,
+  "createdAt": "2024-01-31T22:42:32.769Z",
+  "updatedAt": "2024-01-31T22:42:32.769Z",
+  "homeTeamScore": 0,
+	"awayTeamScore": 2,
+	"amountBet": 1000,
+	"gameId": 1,
+	"participantId": 1,
+  "status": "PENDING",
+  "amountWon": null
+}
+```
