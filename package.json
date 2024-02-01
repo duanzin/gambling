@@ -8,8 +8,7 @@
     "build": "rm -rf ./dist && tsc -p tsconfig.build.json",
     "start": "node dist/server.js",
     "dev": "tsx watch ./src/server.ts",
-    "test": "jest",
-    "test:report": "jest --coverage --watchAll"
+    "test": "jest"
   },
   "dependencies": {
     "@prisma/client": "^5.8.1",
