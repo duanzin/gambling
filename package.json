@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "",
   "main": "server.ts",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "build": "rm -rf ./dist && tsc -p tsconfig.build.json",
     "start": "node dist/server.js",
