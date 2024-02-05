@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import participantsService from "../services/participantsService";
 import { CreateParticipantParams } from "../protocol/participantsProtocol";
+import striptags from "striptags";
 
 async function getParticipants(
   req: Request,
@@ -23,7 +24,7 @@ async function createParticipant(
   try {
     const { name, balance }: CreateParticipantParams = req.body;
     const newParticipant = await participantsService.postParticipant(
-      name,
+      striptags(name),
       balance
     );
     res.status(201).send(newParticipant);

@@ -17,6 +17,7 @@
     "express": "^4.18.2",
     "joi": "^17.12.0",
     "pg": "^8.11.3",
+    "striptags": "^3.2.0",
     "tsx": "^4.7.0"
   },
   "devDependencies": {

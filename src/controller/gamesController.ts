@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import gamesService from "../services/gamesService";
 import { badRequestError } from "../errors/index";
 import { CreateGameParams, EndGameParams } from "../protocol/gamesProtocol";
+import striptags from "striptags";
 
 async function getGames(req: Request, res: Response, next: NextFunction) {
   try {
@@ -26,7 +27,10 @@ async function getGameById(req: Request, res: Response, next: NextFunction) {
 async function createGame(req: Request, res: Response, next: NextFunction) {
   try {
     const { homeTeamName, awayTeamName }: CreateGameParams = req.body;
-    const newGame = await gamesService.postGame(homeTeamName, awayTeamName);
+    const newGame = await gamesService.postGame(
+      striptags(homeTeamName),
+      striptags(awayTeamName)
+    );
     res.status(201).send(newGame);
   } catch (error) {
     next(error);
