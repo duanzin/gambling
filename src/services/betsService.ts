@@ -9,6 +9,7 @@ import gamesRepository from "../repository/gamesRepository";
 import betsRepository from "../repository/betsRepository";
 import participantsService from "./participantsService";
 import { CreateBetParams } from "../protocol/betsProtocol";
+import Reduce from "../utils/reduce";
 
 async function postBet(betData: CreateBetParams): Promise<Bet> {
   const [participantExists, gameExists] = await Promise.all([
@@ -35,15 +36,9 @@ async function updateBet(homeScore: number, awayScore: number, gameId: number) {
     return bet.homeTeamScore === homeScore && bet.awayTeamScore === awayScore;
   });
 
-  const sumWinningAmount = winningBets.reduce(
-    (sum, bet) => sum + bet.amountBet,
-    0
-  );
+  const sumWinningAmount = Reduce(winningBets.map((bet) => bet.amountBet));
 
-  const totalAmountWagered = allBets.reduce(
-    (sum, bet) => sum + bet.amountBet,
-    0
-  );
+  const totalAmountWagered = Reduce(allBets.map((bet) => bet.amountBet));
 
   const updatePromises = allBets.map((bet) => {
     const isWinningBet = winningBets.some(
