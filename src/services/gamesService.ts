@@ -1,6 +1,6 @@
 import { Game } from "@prisma/client";
 import gamesRepository from "../repository/gamesRepository";
-import { conflictError, notFoundError } from "../errors/index";
+import { conflictError, gameNotFoundError } from "../errors/index";
 
 async function getAllGames(): Promise<Game[]> {
   return await gamesRepository.findAll();
@@ -8,7 +8,7 @@ async function getAllGames(): Promise<Game[]> {
 
 async function getSpecificGame(id: number): Promise<Game> {
   const game = await gamesRepository.findById(id);
-  if (!game) throw notFoundError();
+  if (!game) throw gameNotFoundError();
   return game;
 }
 
@@ -25,7 +25,7 @@ async function endGame(
   id: number
 ): Promise<Game> {
   const gameExists = await gamesRepository.findById(id);
-  if (!gameExists) throw notFoundError();
+  if (!gameExists) throw gameNotFoundError();
   if (gameExists.isFinished === true) throw conflictError();
   return await gamesRepository.transactionForEndGame(
     homeTeamScore,

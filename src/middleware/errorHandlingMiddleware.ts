@@ -5,8 +5,6 @@ const errorStatusMapping: Record<string, number> = {
   BadRequestError: 400,
   ConflictError: 409,
   NotFoundError: 404,
-  AmountBetError: 400,
-  InvalidGameError: 400,
 };
 
 function sendErrorResponse(res: Response, status: number, message: string) {

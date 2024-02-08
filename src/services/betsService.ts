@@ -3,7 +3,8 @@ import participantsRepository from "../repository/participantsRepository";
 import {
   amountBetError,
   invalidGameError,
-  notFoundError,
+  gameNotFoundError,
+  participantNotFoundError,
 } from "../errors/index";
 import gamesRepository from "../repository/gamesRepository";
 import betsRepository from "../repository/betsRepository";
@@ -17,7 +18,8 @@ async function postBet(betData: CreateBetParams): Promise<Bet> {
     gamesRepository.findById(betData.gameId),
   ]);
 
-  if (!participantExists || !gameExists) throw notFoundError();
+  if (!participantExists) throw participantNotFoundError();
+  if (!gameExists) throw gameNotFoundError();
   if (participantExists.balance < betData.amountBet) throw amountBetError();
   if (gameExists.isFinished === true) throw invalidGameError();
 

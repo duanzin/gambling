@@ -12,6 +12,20 @@ export function badRequestError() {
   };
 }
 
+export function amountBetError() {
+  return {
+    name: "BadRequestError",
+    message: "Amount bet is greater than the participant's balance",
+  };
+}
+
+export function invalidGameError() {
+  return {
+    name: "BadRequestError",
+    message: "The game you're trying to bet in is finished",
+  };
+}
+
 export function conflictError() {
   return {
     name: "ConflictError",
@@ -22,20 +36,20 @@ export function conflictError() {
 export function notFoundError() {
   return {
     name: "NotFoundError",
-    message: "Element with the specified ID does not exist",
+    message: "Element does not exist",
   };
 }
 
-export function amountBetError() {
+export function gameNotFoundError() {
   return {
-    name: "AmountBetError",
-    message: "Amount bet is greater than the participant's balance",
+    name: "NotFoundError",
+    message: "Game with the specified ID does not exist",
   };
 }
 
-export function invalidGameError() {
+export function participantNotFoundError() {
   return {
-    name: "InvalidGameError",
-    message: "The game you're trying to bet in is finished",
+    name: "NotFoundError",
+    message: "Participant with the specified ID does not exist",
   };
 }
