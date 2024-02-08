@@ -11,6 +11,8 @@ import betsRepository from "../repository/betsRepository";
 import participantsService from "./participantsService";
 import { CreateBetParams } from "../protocol/betsProtocol";
 import Reduce from "../utils/reduce";
+import { FilterWinningBets } from "../utils/filterWinningBets";
+import { calculateAmountWon } from "../utils/calculateAmountWon";
 
 async function postBet(betData: CreateBetParams): Promise<Bet> {
   const [participantExists, gameExists] = await Promise.all([
@@ -34,12 +36,9 @@ async function updateBet(homeScore: number, awayScore: number, gameId: number) {
     return;
   }
 
-  const winningBets = allBets.filter((bet) => {
-    return bet.homeTeamScore === homeScore && bet.awayTeamScore === awayScore;
-  });
+  const winningBets = FilterWinningBets(allBets, homeScore, awayScore);
 
   const sumWinningAmount = Reduce(winningBets.map((bet) => bet.amountBet));
-
   const totalAmountWagered = Reduce(allBets.map((bet) => bet.amountBet));
 
   const updatePromises = allBets.map((bet) => {
@@ -50,8 +49,10 @@ async function updateBet(homeScore: number, awayScore: number, gameId: number) {
     const updateData = {
       status: isWinningBet ? "WON" : "LOST",
       amountWon: isWinningBet
-        ? Math.floor(
-            (bet.amountBet / sumWinningAmount) * totalAmountWagered * (1 - 0.3)
+        ? calculateAmountWon(
+            bet.amountBet,
+            sumWinningAmount,
+            totalAmountWagered
           )
         : 0,
     };
